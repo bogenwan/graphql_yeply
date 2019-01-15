@@ -1,5 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## JS Group Practice App
+
+This app uses the Yelp public GraphQL API and is built in React, mainly for learning and teaching purposes.
+
+If you'd like to join the group, please contact Navid Kamali, Amanda Stephano or Richard Van Breemen. We meet weekly on Fridays usually between 9:30a-10:30a.
+
 ## Available Scripts
 
 In the project directory, you can run:
