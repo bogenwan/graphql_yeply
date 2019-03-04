@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
-const { ApolloServer, gql } = require('apollo-server-express');
-const { typeDefs, resolvers } = require('./schema');
+// const { ApolloServer, gql, IResolverObject } = require('apollo-server-express');
+const { ApolloServer, gql, IResolverObject } = require('apollo-server');
+// const { typeDefs, resolvers } = require('./schema');
+const { RESTDataSource } = require('apollo-datasource-rest');
 
 const path = require('path');
+// import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 require('dotenv').config(
   {
@@ -31,47 +35,83 @@ const books = [
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
-const typeDefs = gql`
-  # Comments in GraphQL are defined with the hash (#) symbol.
+// const typeDefs = gql`
+//   # Comments in GraphQL are defined with the hash (#) symbol.
 
-  # This "Book" type can be used in other type declarations.
-  type Book {
-    title: String
-    author: String
-  }
+//   # This "Book" type can be used in other type declarations.
+//   type Book {
+//     title: String
+//     author: String
+//   }
 
-  # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
-  type Query {
-    books: [Book]
-  }
-`;
+//   # The "Query" type is the root of all GraphQL queries.
+//   # (A "Mutation" type will be covered later on.)
+//   type Query {
+//     books: [Book]
+//   }
+// `;
 
 // Resolvers define the technique for fetching the types in the
 // schema.  We'll retrieve books from the "books" array above.
+// const resolvers = {
+//   Query: {
+//     books: () => books
+//   }
+// };
+
+const typeDefs = gql`
+  type Person {
+    gender: String
+    email: String
+    phone: String
+  }
+
+  type Query {
+    randomPerson: [Person!]!
+    randomPerson2: [Person!]!
+  }
+`;
+
 const resolvers = {
   Query: {
-    books: () => books
+    randomPerson: async () => {
+      const response = await fetch ("https://api.randomuser.me/");
+      const data = await response.json();
+      return data.results;
+    },
+    // randomPerson2: (_, __, {dataSource}) => {
+    //   dataSources.randomUserAPI.getPerson()
+    // }
   }
 };
 
-
-// In the most basic sense, the ApolloServer can be started
-// by passing type definitions (typeDefs) and the resolvers
-// responsible for fetching the data for those types.
 const server = new ApolloServer({
   typeDefs,
   resolvers
 });
 
-// app is from an existing express app
-server.applyMiddleware({ app });
-
-// This `listen` method launches a web-server.  Existing apps
-// can utilize middleware options, which we'll discuss later.
-server.listen({ port: 4000 }, () => {
-  console.log(`🚀 Server ready at http://localhost:4000 ${graphqlPath}`)
+server.listen().then(({url}) => {
+  console.log(`🚀 server ready at ${url}`);
 });
+
+
+
+// // In the most basic sense, the ApolloServer can be started
+// // by passing type definitions (typeDefs) and the resolvers
+// // responsible for fetching the data for those types.
+// const server = new ApolloServer({
+//   typeDefs,
+//   resolvers
+// });
+
+// // app is from an existing express app
+// server.applyMiddleware({ app });
+
+// // This `listen` method launches a web-server.  Existing apps
+// // can utilize middleware options, which we'll discuss later.
+// server.listen({ port: 4000 }, () => {
+//   console.log(`🚀 Server ready at http://localhost:4000 ${server.graphqlPath}`);
+// });
 
 
 
