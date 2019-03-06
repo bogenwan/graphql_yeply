@@ -1,13 +1,11 @@
 const express = require('express');
 const app = express();
 // const { ApolloServer, gql, IResolverObject } = require('apollo-server-express');
-const { ApolloServer, gql, IResolverObject } = require('apollo-server');
-// const { typeDefs, resolvers } = require('./schema');
+const { ApolloServer, IResolverObject } = require('apollo-server-express');
+const { typeDefs, resolvers } = require('./schema.js');
 const { RESTDataSource } = require('apollo-datasource-rest');
 
 const path = require('path');
-// import fetch from 'node-fetch';
-const fetch = require('node-fetch');
 
 require('dotenv').config(
   {
@@ -22,16 +20,16 @@ require('dotenv').config(
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
 // from an existing data source like a REST API or database.
-const books = [
-  {
-    title: 'Street Fighter',
-    author: 'Capcom'
-  },
-  {
-    title: 'King of Fighter',
-    author: 'Namco'
-  }
-];
+// const books = [
+//   {
+//     title: 'Street Fighter',
+//     author: 'Capcom'
+//   },
+//   {
+//     title: 'King of Fighter',
+//     author: 'Namco'
+//   }
+// ];
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
@@ -59,59 +57,59 @@ const books = [
 //   }
 // };
 
-const typeDefs = gql`
-  type Person {
-    gender: String
-    email: String
-    phone: String
-  }
+// const typeDefs = gql`
+//   type Person {
+//     gender: String
+//     email: String
+//     phone: String
+//   }
 
-  type Query {
-    randomPerson: [Person!]!
-    randomPerson2: [Person!]!
-  }
-`;
+//   type Query {
+//     randomPerson: [Person!]!
+//     randomPerson2: [Person!]!
+//   }
+// `;
 
-const resolvers = {
-  Query: {
-    randomPerson: async () => {
-      const response = await fetch ("https://api.randomuser.me/");
-      const data = await response.json();
-      return data.results;
-    },
-    // randomPerson2: (_, __, {dataSource}) => {
-    //   dataSources.randomUserAPI.getPerson()
-    // }
-  }
-};
+// const resolvers = {
+//   Query: {
+//     randomPerson: async () => {
+//       const response = await fetch ("https://api.randomuser.me/");
+//       const data = await response.json();
+//       return data.results;
+//     },
+//     // randomPerson2: (_, __, {dataSource}) => {
+//     //   dataSources.randomUserAPI.getPerson()
+//     // }
+//   }
+// };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
-
-server.listen().then(({url}) => {
-  console.log(`🚀 server ready at ${url}`);
-});
-
-
-
-// // In the most basic sense, the ApolloServer can be started
-// // by passing type definitions (typeDefs) and the resolvers
-// // responsible for fetching the data for those types.
 // const server = new ApolloServer({
 //   typeDefs,
 //   resolvers
 // });
 
-// // app is from an existing express app
-// server.applyMiddleware({ app });
-
-// // This `listen` method launches a web-server.  Existing apps
-// // can utilize middleware options, which we'll discuss later.
-// server.listen({ port: 4000 }, () => {
-//   console.log(`🚀 Server ready at http://localhost:4000 ${server.graphqlPath}`);
+// server.listen().then(({url}) => {
+//   console.log(`🚀 server ready at ${url}`);
 // });
+
+
+
+// In the most basic sense, the ApolloServer can be started
+// by passing type definitions (typeDefs) and the resolvers
+// responsible for fetching the data for those types.
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
+
+// app is from an existing express app
+server.applyMiddleware({ app });
+
+// This `listen` method launches a web-server.  Existing apps
+// can utilize middleware options, which we'll discuss later.
+app.listen({ port: 4000 }, () => {
+  console.log(`🚀 Server ready at http://localhost:4000 ${server.graphqlPath}`);
+});
 
 
 
