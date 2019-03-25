@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+var cors = require('cors');
 // const { ApolloServer, gql, IResolverObject } = require('apollo-server-express');
 const { ApolloServer, IResolverObject } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schema.js');
@@ -12,6 +13,8 @@ require('dotenv').config(
     path: path.join(__dirname, '/../../.env')
   }
 );
+
+app.use(cors());
 // console.log(process.env);
 
 // const graphqlHTTP = require('express-graphql');
@@ -100,6 +103,10 @@ require('dotenv').config(
 const server = new ApolloServer({
   typeDefs,
   resolvers
+});
+
+app.get('/business-hours', function (req, res) {
+  res.send('hours');
 });
 
 // app is from an existing express app
